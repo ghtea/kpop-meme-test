@@ -5,18 +5,31 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint-fix": "next lint --fix",
+    "ts-check": "tsc --project ./tsconfig.json"
   },
+  "types": "./index.d.ts",
   "dependencies": {
+    "clsx": "^1.1.1",
     "next": "12.0.10",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "supercons": "^0.0.1",
+    "tailwind-merge": "^1.2.0"
   },
   "devDependencies": {
     "@types/node": "17.0.14",
     "@types/react": "17.0.38",
+    "@types/tailwindcss": "^3.0.5",
+    "autoprefixer": "^10.4.2",
     "eslint": "8.8.0",
     "eslint-config-next": "12.0.10",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-tailwindcss": "^3.4.3",
+    "postcss": "^8.4.6",
+    "sass": "^1.49.7",
+    "tailwindcss": "^3.0.18",
     "typescript": "4.5.5"
   }
 }
