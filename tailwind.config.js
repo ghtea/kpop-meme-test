@@ -15,6 +15,21 @@ module.exports = {
         zinc: {
           950: "#0c0c0e",
         }
+      },
+      keyframes: {
+        shake: {
+          "0%": {transform: "rotate(-3deg)", opacity: 0.5},
+          "50%": {transform: "rotate(3deg)"},
+          "100%": {},
+        },
+        rising: {
+          "0%": {transform: "translateY(16px)", opacity: 0},
+          "100%": {transform: "translateY(0)"},
+        }
+      },
+      animation: {
+        rising: "rising 0.5s ease-out",
+        shake: "shake 0.5s",
       }
     }
   },

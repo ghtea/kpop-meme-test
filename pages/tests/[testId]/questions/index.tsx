@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import type {NextPage} from "next"
 import Head from "next/head"
 import Image from "next/image"
@@ -11,6 +12,8 @@ import {getLocalStorage, setLocalStorage} from "utils/localStorage"
 const QuestionsPage: NextPage = () => {
   const router = useRouter()
 
+  const [isDoneAnimation, setIsDoneAnimation] = useState(false)
+  
   const testId = useMemo(()=>{
     const rawTestId = router.query.testId
     return typeof rawTestId === "string" ? rawTestId : ""
@@ -85,17 +88,41 @@ const QuestionsPage: NextPage = () => {
     return (testData?.questions[questionNumber-1]?.options || [])
   }, [questionNumber, testData?.questions])
 
+  const progressPercentageString = useMemo(()=>{
+    if (!testData) return "0%"
+    return `${(questionNumber/testData.questions.length)*100}%`
+  },[questionNumber, testData])
+
+  useEffect(()=>{
+    console.log("progressPercentageString: ", progressPercentageString); // TODO: remove 
+  },[progressPercentageString])
+
+  useEffect(()=>{
+    setIsDoneAnimation(false)
+    setTimeout(()=>{
+      setIsDoneAnimation(true)
+    },1000)
+  },[questionNumber])
+
   return (
     <LayoutBasic>
       {testId && (
         <Flex className="justify-start h-full">
-          <Box className="mt-2 cursor-pointer">
+          <Box className={clsx(["mt-2 cursor-pointer", !isDoneAnimation && "animate-shake"])}>
             <Image alt={`${testId}-question-${questionNumber}`} src={`/${testId}/question-${questionNumber}.png`} width={375} height={324}/>
           </Box>
-          <Flex className="px-12 mt-12">
+          <Flex className="px-4 mt-0">
+            <Flex className="items-start h-3 bg-[#E8EDF5] rounded-[6px]">
+              <Flex style={{width: progressPercentageString}} className={"h-3 bg-[#BEBEBE] rounded-[6px]"}></Flex>
+            </Flex>
+          </Flex>
+          <Flex className="px-12 mt-6">
             {options.map((item, index) => (
               <Flex key={`option-${index}`} className="mt-3 first:mt-0">
-                <Button onClick={()=>onClickOption(index)} >{item}</Button>
+                <Button 
+                  onClick={()=>onClickOption(index)} 
+                  className={clsx(!isDoneAnimation && "animate-rising")}
+                >{item}</Button>
               </Flex>
             )) }
           </Flex>
