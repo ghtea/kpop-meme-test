@@ -4,7 +4,7 @@ import Head from "next/head"
 import Image from "next/image"
 import {useRouter} from "next/router"
 import {useCallback, useEffect, useMemo, useState} from "react"
-import {Box, Flex, Button} from "components/atoms"
+import {Box, Flex, Button, Text} from "components/atoms"
 import {LayoutBasic} from "components/templates/LayoutBasic"
 import {data} from "public/shared/data"
 import {getLocalStorage, setLocalStorage} from "utils/localStorage"
@@ -84,6 +84,10 @@ const QuestionsPage: NextPage = () => {
     }
   },[getNewAnswerChoices, questionNumber, router, testId])
 
+  const questionSentence = useMemo(()=>{
+    return (testData?.questions[questionNumber-1]?.question || "")
+  },[questionNumber, testData?.questions])
+
   const options = useMemo(()=>{
     return (testData?.questions[questionNumber-1]?.options || [])
   }, [questionNumber, testData?.questions])
@@ -108,9 +112,17 @@ const QuestionsPage: NextPage = () => {
     <LayoutBasic>
       {testId && (
         <Flex className="justify-start h-full">
-          <Box className={clsx(["mt-2 cursor-pointer", !isDoneAnimation && "animate-shake"])}>
-            <Image alt={`${testId}-question-${questionNumber}`} src={`/${testId}/question-${questionNumber}.png`} width={375} height={324}/>
-          </Box>
+          <Flex className={clsx(["relative w-[375px] h-[324px]", !isDoneAnimation && "animate-shake"])}>
+            <Box className={"absolute bottom-4 cursor-pointer"}>
+              <Image alt={`${testId}-question-${questionNumber}`} src={`/${testId}/question-${questionNumber}.jpg`} width={324} height={200}/>
+            </Box>
+            <Box className={"flex absolute top-[60px] right-1/2 flex-row justify-center items-center w-9/12 h-12 translate-x-1/2"}>
+              <Text className="text-lg">{questionSentence}</Text>
+            </Box>
+            <Box className="absolute">
+              <Image alt={"question frame"} src={"/shared/question-frame.png"} width={375} height={324}/>
+            </Box>
+          </Flex>
           <Flex className="px-4 mt-0">
             <Flex className="items-start h-3 bg-[#E8EDF5] rounded-[6px]">
               <Flex style={{width: progressPercentageString}} className={"h-3 bg-[#BEBEBE] rounded-[6px]"}></Flex>

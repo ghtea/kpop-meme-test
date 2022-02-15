@@ -12,7 +12,7 @@ export const Button: React.FunctionComponent<ButtonProps> = memo(forwardRef<HTML
   const className = useMemo(()=>twMerge(
     clsx(
       "w-full min-h-[40px] font-[17px] bg-transparent rounded-[10px] shadow-[0px_4px_4px_rgba(0,0,0,0.1),inset_0px_4px_4px_rgba(0,0,0,0.25)]",
-      "hover:bg-[#FCBFEB]"      
+      "active:bg-[#FCBFEB]"      
     ),
     rest.className
   ),[rest.className])
