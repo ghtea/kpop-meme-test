@@ -5,5 +5,8 @@ export function middleware(req: NextRequest, ev: NextFetchEvent) {
   if (pathname == "/") {
     return NextResponse.redirect("/tests/food")
   }
+  else if (pathname == "/tests") {
+    return NextResponse.redirect("/tests/food")
+  }
   return NextResponse.next()
 }

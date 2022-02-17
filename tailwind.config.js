@@ -25,11 +25,16 @@ module.exports = {
         rising: {
           "0%": {transform: "translateY(16px)", opacity: 0},
           "100%": {transform: "translateY(0)"},
+        },
+        descending: {
+          "0%": {transform: "translateY(-32px)", opacity: 0},
+          "100%": {transform: "translateY(0)"},
         }
       },
       animation: {
-        rising: "rising 0.5s ease-out",
         shake: "shake 0.5s",
+        rising: "rising 0.5s ease-out",
+        descending: "descending 1s ease-out",
       }
     }
   },

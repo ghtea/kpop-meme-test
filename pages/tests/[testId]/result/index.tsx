@@ -1,3 +1,4 @@
+import copy from "copy-to-clipboard";
 import {AES, enc} from "crypto-js"
 import type {NextPage} from "next"
 import {useRouter} from "next/router"
@@ -16,6 +17,15 @@ const ResultPage: NextPage = () => {
     const rawTestId = router.query.testId
     return typeof rawTestId === "string" ? rawTestId : ""
   }, [router.query.testId])
+
+  const anotherTestId = useMemo(()=>{
+    if (testId === "food") {
+      return "knowledge"
+    }
+    else {
+      return "food"
+    }
+  }, [testId])
 
   const testData = useMemo(()=>{
     return (data[testId as keyof typeof data]? data[testId as keyof typeof data] : undefined)
@@ -99,21 +109,30 @@ const ResultPage: NextPage = () => {
 
   const onClickCopyLink = useCallback(()=>{
     // copy link and let user know copied
+    copy(window.location.href)
+    alert("링크가 복사되었습니다!")
   },[])
+
+  const onClickAnotherTest = useCallback(()=>{
+    router.push(`/tests/${anotherTestId}`)
+  },[anotherTestId, router])
 
   return (
     <LayoutBasic>
       {(testId && score !== undefined) && (
         <Flex className="justify-start h-full">
-          <Box className="mt-2 cursor-pointer">
+          <Box className="mt-2 animate-descending cursor-pointer">
             <Image alt={`${testId}-result-${score}`} src={`/shared/score-${score}.png`} width={375} height={324}/>
           </Box>
           <Flex className="px-12 mt-12">
-            <Flex>
+            <Flex className="animate-rising">
               <Button onClick={onClickRetry}>{"다시하기"}</Button>
             </Flex>
-            <Flex className="mt-3 first:mt-0">
+            <Flex className="mt-3 animate-rising">
               <Button onClick={onClickCopyLink} >{"링크 복사"}</Button>
+            </Flex>
+            <Flex className="mt-3 animate-rising">
+              <Button onClick={onClickAnotherTest} >{"다른 테스트 하러가기"}</Button>
             </Flex>
           </Flex>
         </Flex>
