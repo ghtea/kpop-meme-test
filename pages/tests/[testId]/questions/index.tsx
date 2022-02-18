@@ -22,7 +22,7 @@ const QuestionsPage: NextPage = () => {
   const questionNumber = useMemo(()=>{
     const rawNo = router.query.no
     if (typeof rawNo !== "string") return 1
-    return parseInt(rawNo) || 1
+    return parseInt(rawNo, 10) || 1
   }, [router.query.no])
 
   const testData = useMemo(()=>{
@@ -31,12 +31,10 @@ const QuestionsPage: NextPage = () => {
 
   const answerChoices = useMemo(()=>{
     const rawAnswerChoices = router.query.c
-    const newAnswerChoices = Array.isArray(rawAnswerChoices) 
-      ? rawAnswerChoices 
-      : rawAnswerChoices 
-        ? [rawAnswerChoices]
-        : []
-    const questionsLength = testData?.questions.length || 10;
+    const newAnswerChoices = typeof rawAnswerChoices === "string"
+      ? rawAnswerChoices.split("-")
+      : []
+    const questionsLength = testData?.questions.length || 0;
 
     return [...newAnswerChoices, ...Array(questionsLength).fill(undefined)].slice(0,questionsLength).map(item => parseInt(item, 10))
   }, [router.query.c, testData?.questions.length])
@@ -54,14 +52,16 @@ const QuestionsPage: NextPage = () => {
   const onClickOption = useCallback((value: number)=>{
     if (!testId) return;
 
-    const newAnswerChoices = getNewAnswerChoices(questionNumber - 1, value)
+    const newAnswerChoicesQuery = getNewAnswerChoices(questionNumber - 1, value)
+      .map(item => isNaN(item) ? "" : item) 
+      .join("-")
 
     if (questionNumber < 10){
       router.push({
         pathname: `/tests/${testId}/questions`,
         query: {
           no: questionNumber + 1,
-          c: newAnswerChoices,
+          c: newAnswerChoicesQuery,
         },
       })
     }
@@ -69,7 +69,7 @@ const QuestionsPage: NextPage = () => {
       router.push({
         pathname: `/tests/${testId}/result`,
         query: {
-          c: newAnswerChoices,
+          c: newAnswerChoicesQuery,
         },
       })
     }
@@ -78,7 +78,7 @@ const QuestionsPage: NextPage = () => {
         pathname: `/tests/${testId}/questions`,
         query: {
           no: 1,
-          c: newAnswerChoices,
+          c: newAnswerChoicesQuery,
         },
       })
     }

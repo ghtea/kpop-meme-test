@@ -33,14 +33,18 @@ const ResultPage: NextPage = () => {
   
   const answerChoices = useMemo(()=>{
     const rawAnswerChoices = router.query.c
-    const newAnswerChoices = Array.isArray(rawAnswerChoices) 
-      ? rawAnswerChoices 
-      : rawAnswerChoices 
-        ? [rawAnswerChoices]
-        : []
+    if (!rawAnswerChoices) return null
+
+    const newAnswerChoices = typeof rawAnswerChoices === "string"
+      ? rawAnswerChoices.split("-")
+      : []
     const questionsLength = testData?.questions.length || 10;
 
-    return [...newAnswerChoices, ...Array(questionsLength).fill(undefined)].slice(0,questionsLength).map(item => parseInt(item, 10))
+    return [
+      ...newAnswerChoices, ...Array(questionsLength).fill(undefined)
+    ]
+      .slice(0,questionsLength)
+      .map(item => parseInt(item, 10))
   }, [router.query.c, testData?.questions.length])
 
   useEffect(()=>{
@@ -49,7 +53,29 @@ const ResultPage: NextPage = () => {
 
   // calculate score
   useEffect(()=>{
-    if (!testData || answerChoices.some(item => isNaN(item))) return;
+    if (!testData){
+      alert("알수 없는 에러가 발생했습니다")
+
+      router.push(`/tests/${testId}/questions`)
+      return;
+    }
+    else if (answerChoices === null){
+      return;
+    }
+
+    const notTriedQuestionIndex = answerChoices.findIndex(item => isNaN(item))
+    if (notTriedQuestionIndex !== -1) {
+      alert("문제를 다 풀지 않았습니다")
+
+      router.push({
+        pathname: `/tests/${testId}/questions`,
+        query: {
+          c: router.query.c,
+          no: notTriedQuestionIndex + 1,
+        },
+      })
+      return;
+    }
 
     const answers = testData.questions.map(item => item.answer)
     const calculatedScore = answerChoices.reduce((acc, cur, index)=> {
