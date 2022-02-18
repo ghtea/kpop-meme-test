@@ -57,7 +57,7 @@ const ResultPage: NextPage = () => {
         ga.event({
           action: `score-${testId}-${index+1}`,
           params : {
-            result: true
+            result: 1
           }
         })
 
@@ -67,7 +67,7 @@ const ResultPage: NextPage = () => {
         ga.event({
           action: `score-${testId}-${index+1}`,
           params : {
-            result: false
+            result: 0
           }
         })
 

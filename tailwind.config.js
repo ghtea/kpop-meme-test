@@ -37,6 +37,8 @@ module.exports = {
         descending: "descending 1s ease-out",
       }
     }
+
+    
   },
   plugins: [
     // https://tailwindcss.com/docs/functions-and-directives#using-apply-with-per-component-css

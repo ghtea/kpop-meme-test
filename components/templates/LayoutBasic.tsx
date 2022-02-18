@@ -7,7 +7,7 @@ export const LayoutBasic: React.FunctionComponent = ({
 
   return (
     <Flex className="justify-center w-screen min-h-screen" >
-      <Flex className="w-[375px] h-[600px] border border-red-700 border-solid">
+      <Flex className="w-[375px] h-[600px]">
         {children}
       </Flex>
     </Flex>
