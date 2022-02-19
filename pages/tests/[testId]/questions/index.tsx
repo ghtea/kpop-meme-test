@@ -39,10 +39,6 @@ const QuestionsPage: NextPage = () => {
     return [...newAnswerChoices, ...Array(questionsLength).fill(undefined)].slice(0,questionsLength).map(item => parseInt(item, 10))
   }, [router.query.c, testData?.questions.length])
 
-  useEffect(()=>{
-    console.log("answerChoices: ", answerChoices); // TODO: remove 
-  },[answerChoices])
-
   const getNewAnswerChoices = useCallback((index, value)=>{
     const newAnswerChocies = [...answerChoices]
     newAnswerChocies.splice(index, 1, value);
