@@ -4,6 +4,7 @@ import {useRouter} from "next/router"
 import {useCallback, useMemo} from "react"
 import {Box, Flex, Image} from "components/atoms"
 import {LayoutBasic} from "components/templates/LayoutBasic"
+import {WEBSITE_TITLE} from "pages/_app"
 
 const TestPage: NextPage = () => {
   const router = useRouter()
@@ -18,13 +19,18 @@ const TestPage: NextPage = () => {
   },[router, testId])
 
   return (
-    <LayoutBasic>
-      <Flex className="justify-center h-full">
-        <Box onClick={onClick} className="mr-2 cursor-pointer">
-          {testId && <Image alt={"food-start"} src={`/${testId}/start.png`} width={375} height={545}/>}
-        </Box>
-      </Flex>
-    </LayoutBasic>
+    <>
+      <Head>
+        <title>{WEBSITE_TITLE}</title>
+      </Head>
+      <LayoutBasic>
+        <Flex className="justify-center h-full">
+          <Box onClick={onClick} className="mr-2 cursor-pointer">
+            {testId && <Image alt={"food-start"} src={`/${testId}/start.png`} width={375} height={545}/>}
+          </Box>
+        </Flex>
+      </LayoutBasic>
+    </>
   )
 }
 

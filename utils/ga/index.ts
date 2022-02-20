@@ -6,6 +6,6 @@ export const pageview = (url: unknown) => {
 }
 
 // log specific events happening.
-export const event = ({action, params}: {action: any, params: any}) => {
+export const event = ({action, params}: {action: any, params?: any}) => {
   window.gtag("event", action, params)
 }
