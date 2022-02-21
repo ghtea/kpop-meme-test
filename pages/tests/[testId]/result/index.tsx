@@ -4,16 +4,22 @@ import type {NextPage} from "next"
 import Head from "next/head";
 import {useRouter} from "next/router"
 import {useCallback, useEffect, useMemo, useState} from "react"
-import {Box, Button, Flex, Image} from "components/atoms"
+import {Box, Button, Flex, Image, Text} from "components/atoms"
 import {LayoutBasic} from "components/templates/LayoutBasic"
 import {WEBSITE_TITLE} from "pages/_app";
 import {data} from "public/shared/data"
+import sentenceEffectOne from "public/shared/sentence-effect-1.png"
+import sentenceEffectTwo from "public/shared/sentence-effect-2.png"
+import sentenceEffectThree from "public/shared/sentence-effect-3.png"
+import sentenceEffectFour from "public/shared/sentence-effect-4.png"
+import {decrypt, encrypt} from "utils/crypto";
+
 import * as ga from "utils/ga"
 
 const ResultPage: NextPage = () => {
   const router = useRouter()
 
-  const [score, setScore] = useState(0)
+  const [score, setScore] = useState(-1)
 
   const testId = useMemo(()=>{
     const rawTestId = router.query.testId
@@ -32,6 +38,29 @@ const ResultPage: NextPage = () => {
   const testData = useMemo(()=>{
     return (data[testId as keyof typeof data]? data[testId as keyof typeof data] : undefined)
   }, [testId])
+
+  const sentence = useMemo(()=>{
+    const testData = data[testId as keyof typeof data];
+    if (!testData) return ""
+
+    const scoreData = testData.scores.find(item => item.score === score)
+
+    return scoreData ? scoreData.sentence : ""
+  }, [score, testId])
+
+  const sentenceEffect = useMemo(()=>{
+    if (score >= 10){
+      return sentenceEffectFour
+    } else if (score >= 7){
+      return sentenceEffectThree
+    } else if (score >= 4){
+      return sentenceEffectTwo
+    } else if (score >= 0) {
+      return sentenceEffectOne
+    } else {
+      return undefined
+    }
+  },[score])
   
   const answerChoices = useMemo(()=>{
     const rawAnswerChoices = router.query.c
@@ -93,7 +122,7 @@ const ResultPage: NextPage = () => {
           action: `${testId}-score-calculatedScore`
         })
     
-        const encryptedScoreText = AES.encrypt(calculatedScore.toString(), "foodfoodfoodfood").toString()
+        const encryptedScoreText = encrypt(calculatedScore.toString())
         
         router.push({
           pathname: `/tests/${testId}/result`,
@@ -110,7 +139,7 @@ const ResultPage: NextPage = () => {
     const rawScore = router.query.s
     const encryptedScore = typeof rawScore === "string" ? rawScore : ""
     if (!encryptedScore) return;
-    const decryptedScore = parseInt(AES.decrypt(encryptedScore, "foodfoodfoodfood").toString(enc.Utf8), 10)
+    const decryptedScore = parseInt(decrypt(encryptedScore), 10)
 
     setScore(decryptedScore)
   },[router.query.s, testId])
@@ -140,7 +169,15 @@ const ResultPage: NextPage = () => {
             <Box className="mt-2 animate-descending cursor-pointer">
               <Image alt={`${testId}-result-${score}`} src={`/shared/score-${score}.png`} width={375} height={324}/>
             </Box>
-            <Flex className="px-12 mt-12">
+            <Flex className="relative w-[375px] h-[70px]">
+              <Box className="absolute -top-2 w-[375px] h-[70px]">
+                {sentenceEffect && <Image width={375} height={70} alt={"sentence-effect"} src={sentenceEffect} />}
+              </Box>
+              <Box className="absolute top-[8px]">
+                <Text className="text-2xl">{sentence}</Text>
+              </Box>
+            </Flex>
+            <Flex className="px-12 mt-4">
               <Flex className="animate-rising">
                 <Button onClick={onClickRetry}>{"다시하기"}</Button>
               </Flex>

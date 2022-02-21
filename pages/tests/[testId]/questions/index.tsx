@@ -130,6 +130,7 @@ const QuestionsPage: NextPage = () => {
                   <Button 
                     onClick={()=>onClickOption(index)} 
                     className={clsx(!isDoneAnimation && "animate-rising")}
+                    color={testId === "food" ? "pink" : "purple"}
                   >{item}</Button>
                 </Flex>
               )) }

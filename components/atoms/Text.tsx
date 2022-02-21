@@ -22,7 +22,7 @@ export const Text: React.FunctionComponent<TextProps> = memo(forwardRef<HTMLSpan
   },[appearance])
 
   const className = useMemo(()=>twMerge(
-    clsx(appearanceClassName, "w-auto"
+    clsx(appearanceClassName, "w-auto text-center whitespace-pre-wrap"
     ), rest.className
   ),[rest.className, appearanceClassName])
 
