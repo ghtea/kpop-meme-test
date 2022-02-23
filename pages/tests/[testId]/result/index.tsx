@@ -158,13 +158,13 @@ const ResultPage: NextPage = () => {
   },[router.query.s, testId])
 
   const onClickRetry = useCallback(()=>{
-    testId && router.push(`/tests/${testId}/questions?no=1`)
+    testId && router.push(`/tests/${testId}`)
   },[router, testId])
 
-  const onClickCopyLink = useCallback(()=>{
+  const onClickCopyResultLink = useCallback(()=>{
     // copy link and let user know copied
     copy(window.location.href)
-    alert("링크가 복사되었습니다!")
+    alert("결과 링크가 복사되었습니다!")
   },[])
 
   const onClickAnotherTest = useCallback(()=>{
@@ -195,7 +195,7 @@ const ResultPage: NextPage = () => {
                 <Button onClick={onClickRetry}>{"다시하기"}</Button>
               </Flex>
               <Flex className="mt-3 animate-rising">
-                <Button onClick={onClickCopyLink} >{"링크 복사"}</Button>
+                <Button onClick={onClickCopyResultLink} >{"결과 링크 복사"}</Button>
               </Flex>
               <Flex className="mt-3 animate-rising">
                 <Button onClick={onClickAnotherTest} >{"다른 테스트 하러가기"}</Button>
