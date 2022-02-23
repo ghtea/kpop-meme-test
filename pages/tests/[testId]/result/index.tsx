@@ -103,23 +103,36 @@ const ResultPage: NextPage = () => {
         const answers = testData.questions.map(item => item.answer)
         const calculatedScore = answerChoices.reduce((acc, cur, index)=> {
           if (cur === answers[index]){
+            // ga.event({
+            //   action: `${testId}-question-${index+1}-correct`,
+            // })
             ga.event({
-              action: `${testId}-question-${index+1}-correct`,
+              action: `${testId}-question-${index+1}`,
+              params: {
+                value: 1,
+              }
             })
-    
             return acc + 1
           }
           else {
+            // ga.event({
+            //   action: `${testId}-question-${index+1}-wrong`,
+            // })
             ga.event({
-              action: `${testId}-question-${index+1}-wrong`,
+              action: `${testId}-question-${index+1}`,
+              params: {
+                value: 0,
+              }
             })
-    
             return acc
           }
         }, 0)    
     
         ga.event({
-          action: `${testId}-score-calculatedScore`
+          action: `${testId}-score`,
+          params: {
+            value: calculatedScore,
+          }
         })
     
         const encryptedScoreText = encrypt(calculatedScore.toString())
