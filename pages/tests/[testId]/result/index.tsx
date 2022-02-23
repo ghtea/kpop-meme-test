@@ -162,7 +162,6 @@ const ResultPage: NextPage = () => {
   },[router, testId])
 
   const onClickCopyResultLink = useCallback(()=>{
-    // copy link and let user know copied
     copy(window.location.href)
     alert("결과 링크가 복사되었습니다!")
   },[])

@@ -13,7 +13,8 @@ const QuestionsPage: NextPage = () => {
   const router = useRouter()
 
   const [isDoneAnimation, setIsDoneAnimation] = useState(false)
-  
+  const [isOptionsDisabled, setIsOptionsDisabled] = useState(false)
+
   const testId = useMemo(()=>{
     const rawTestId = router.query.testId
     return typeof rawTestId === "string" ? rawTestId : ""
@@ -100,6 +101,11 @@ const QuestionsPage: NextPage = () => {
     },1000)
   },[questionNumber])
 
+  useEffect(()=>{
+    setIsOptionsDisabled(true)
+    setTimeout(()=>setIsOptionsDisabled(false), 1000)
+  },[questionNumber])
+
   return (
     <>
       <Head>
@@ -131,6 +137,7 @@ const QuestionsPage: NextPage = () => {
                     onClick={()=>onClickOption(index)} 
                     className={clsx(!isDoneAnimation && "animate-rising")}
                     color={testId === "food" ? "pink" : "purple"}
+                    disabled={isOptionsDisabled}
                   >{item}</Button>
                 </Flex>
               )) }
