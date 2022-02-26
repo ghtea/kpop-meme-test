@@ -103,7 +103,7 @@ const QuestionsPage: NextPage = () => {
 
   useEffect(()=>{
     setIsOptionsDisabled(true)
-    setTimeout(()=>setIsOptionsDisabled(false), 1000)
+    setTimeout(()=>setIsOptionsDisabled(false), 500)
   },[questionNumber])
 
   return (
