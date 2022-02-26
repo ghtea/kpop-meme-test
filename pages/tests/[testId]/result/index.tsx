@@ -1,6 +1,6 @@
 import copy from "copy-to-clipboard";
-import {AES, enc} from "crypto-js"
-import type {NextPage} from "next"
+import type {GetStaticPaths, GetStaticProps, NextPage} from "next"
+import {NextSeo} from "next-seo";
 import Head from "next/head";
 import {useRouter} from "next/router"
 import {useCallback, useEffect, useMemo, useState} from "react"
@@ -16,15 +16,19 @@ import {decrypt, encrypt} from "utils/crypto";
 
 import * as ga from "utils/ga"
 
-const ResultPage: NextPage = () => {
+
+type ResultPageProps = {
+  testId: string
+  scoreParam: string
+}
+
+const ResultPage: NextPage<ResultPageProps> = ({
+  testId,
+  scoreParam,
+}) => {
   const router = useRouter()
 
   const [score, setScore] = useState(-1)
-
-  const testId = useMemo(()=>{
-    const rawTestId = router.query.testId
-    return typeof rawTestId === "string" ? rawTestId : ""
-  }, [router.query.testId])
 
   const anotherTestId = useMemo(()=>{
     if (testId === "food") {
@@ -149,13 +153,13 @@ const ResultPage: NextPage = () => {
 
   // read encrypted score from query
   useEffect(()=>{
-    const rawScore = router.query.s
+    const rawScore = router.query.s || scoreParam
     const encryptedScore = typeof rawScore === "string" ? rawScore : ""
     if (!encryptedScore) return;
     const decryptedScore = parseInt(decrypt(encryptedScore), 10)
 
     setScore(decryptedScore)
-  },[router.query.s, testId])
+  },[router.query.s, scoreParam, testId])
 
   const onClickRetry = useCallback(()=>{
     testId && router.push(`/tests/${testId}`)
@@ -170,11 +174,48 @@ const ResultPage: NextPage = () => {
     router.push(`/tests/${anotherTestId}`)
   },[anotherTestId, router])
 
+  const ogImgUrl = useMemo(()=>{
+    if (score === 1){
+      return "https://res.cloudinary.com/de1xj1rhy/image/upload/v1645698419/kpop-meme-test/og-score-1_sknjeo.png"
+    } else if (score === 2){
+      return "https://res.cloudinary.com/de1xj1rhy/image/upload/v1645698420/kpop-meme-test/og-score-2_slkrpe.png"
+    } else if (score === 3){
+      return "https://res.cloudinary.com/de1xj1rhy/image/upload/v1645698420/kpop-meme-test/og-score-3_io1hit.png"
+    } else if (score === 4){
+      return "https://res.cloudinary.com/de1xj1rhy/image/upload/v1645698419/kpop-meme-test/og-score-4_mbluve.png"
+    } else if (score === 5){
+      return "https://res.cloudinary.com/de1xj1rhy/image/upload/v1645698419/kpop-meme-test/og-score-5_spoefk.png"
+    } else if (score === 6){
+      return "https://res.cloudinary.com/de1xj1rhy/image/upload/v1645698419/kpop-meme-test/og-score-6_ejxmr9.png"
+    } else if (score === 7){
+      return "https://res.cloudinary.com/de1xj1rhy/image/upload/v1645698420/kpop-meme-test/og-score-7_nq5e7h.png"
+    } else if (score === 8){
+      return "https://res.cloudinary.com/de1xj1rhy/image/upload/v1645698420/kpop-meme-test/og-score-8_klwlyg.png"
+    } else if (score === 9){
+      return "https://res.cloudinary.com/de1xj1rhy/image/upload/v1645698421/kpop-meme-test/og-score-9_mo1rr7.png"
+    } else if (score === 10){
+      return "https://res.cloudinary.com/de1xj1rhy/image/upload/v1645698420/kpop-meme-test/og-score-10_t2zsoj.png"
+    } else { // 0
+      return "https://res.cloudinary.com/de1xj1rhy/image/upload/v1645698420/kpop-meme-test/og-score-0_nd9wek.png"
+    }
+  },[score])
+
   return (
     <>
-      <Head>
-        <title>{WEBSITE_TITLE}</title>
-      </Head>
+      <NextSeo
+        title={WEBSITE_TITLE}
+        description=""
+        openGraph={{
+          title: WEBSITE_TITLE,
+          images: [
+            {
+              url: ogImgUrl,
+              width: 1200,
+              height: 630,
+            },
+          ],
+        }}
+      />
       <LayoutBasic>
         {(testId && score !== undefined) && (
           <Flex className="justify-start h-full">
@@ -205,6 +246,24 @@ const ResultPage: NextPage = () => {
       </LayoutBasic>
     </>
   )
+}
+
+export const getStaticPaths: GetStaticPaths = () => {
+  return {
+    paths: [{params: {testId: "food"}}, {params: {testId: "knowledge"}}],
+    fallback: true,
+  };
+}
+
+export const getStaticProps: GetStaticProps = (context) => {
+  const testId = context?.params?.testId || ""
+
+  return {
+    props: {
+      testId: testId === "food" ? "food" : "knowledge",
+      scoreParam: context?.params?.s || ""
+    },
+  }
 }
 
 export default ResultPage

@@ -1,28 +1,46 @@
-import type {NextPage} from "next"
-import Head from "next/head"
+import type {NextPage, GetStaticProps, GetStaticPaths} from "next"
+import {NextSeo} from "next-seo";
 import {useRouter} from "next/router"
 import {useCallback, useMemo} from "react"
 import {Box, Flex, Image, Button, Text} from "components/atoms"
 import {LayoutBasic} from "components/templates/LayoutBasic"
 import {WEBSITE_TITLE} from "pages/_app"
 
-const TestPage: NextPage = () => {
-  const router = useRouter()
+type TestPageProps = {
+  testId: string
+}
 
-  const testId = useMemo(()=>{
-    const rawTestId = router.query.testId
-    return typeof rawTestId === "string" ? rawTestId : ""
-  }, [router.query.testId])
+const TestPage: NextPage<TestPageProps> = ({
+  testId
+}) => {
+  const router = useRouter()
 
   const onClick = useCallback(()=>{
     testId && router.push(`/tests/${testId}/questions?no=1`)
   },[router, testId])
 
+  const ogImgUrl = useMemo(()=>{
+    return testId === "food" 
+      ? "https://res.cloudinary.com/de1xj1rhy/image/upload/v1645698419/kpop-meme-test/og-food-start_jsgr1x.png"
+      : "https://res.cloudinary.com/de1xj1rhy/image/upload/v1645698420/kpop-meme-test/og-knowledge-start_ovmyiy.png" 
+  },[testId])
+
   return (
     <>
-      <Head>
-        <title>{WEBSITE_TITLE}</title>
-      </Head>
+      <NextSeo
+        title={WEBSITE_TITLE}
+        description=""
+        openGraph={{
+          title: WEBSITE_TITLE,
+          images: [
+            {
+              url: ogImgUrl,
+              width: 1200,
+              height: 630,
+            },
+          ],
+        }}
+      />
       <LayoutBasic>
         <Flex className="relative justify-center h-full">
           {testId && (
@@ -39,6 +57,23 @@ const TestPage: NextPage = () => {
       </LayoutBasic>
     </>
   )
+}
+
+export const getStaticPaths: GetStaticPaths = () => {
+  return {
+    paths: [{params: {testId: "food"}}, {params: {testId: "knowledge"}}],
+    fallback: true,
+  };
+}
+
+export const getStaticProps: GetStaticProps = (context) => {
+  const testId = context?.params?.testId || ""
+
+  return {
+    props: {
+      testId: testId === "food" ? "food" : "knowledge"
+    },
+  }
 }
 
 export default TestPage
