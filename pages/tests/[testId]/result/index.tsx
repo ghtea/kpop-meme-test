@@ -1,7 +1,6 @@
 import copy from "copy-to-clipboard";
 import type {GetStaticPaths, GetStaticProps, NextPage} from "next"
 import {NextSeo} from "next-seo";
-import Head from "next/head";
 import {useRouter} from "next/router"
 import {useCallback, useEffect, useMemo, useState} from "react"
 import {Box, Button, Flex, Image, Text} from "components/atoms"
@@ -19,16 +18,16 @@ import * as ga from "utils/ga"
 
 type ResultPageProps = {
   testId: string
-  scoreParam: string
+  defaultScore: number
 }
 
 const ResultPage: NextPage<ResultPageProps> = ({
   testId,
-  scoreParam,
+  defaultScore,
 }) => {
   const router = useRouter()
 
-  const [score, setScore] = useState(-1)
+  const [score, setScore] = useState(defaultScore)
 
   const anotherTestId = useMemo(()=>{
     if (testId === "food") {
@@ -111,10 +110,7 @@ const ResultPage: NextPage<ResultPageProps> = ({
             //   action: `${testId}-question-${index+1}-correct`,
             // })
             ga.event({
-              action: `${testId}-question-${index+1}`,
-              params: {
-                value: 1,
-              }
+              action: `${testId}-question-${index+1}-right`,
             })
             return acc + 1
           }
@@ -123,20 +119,14 @@ const ResultPage: NextPage<ResultPageProps> = ({
             //   action: `${testId}-question-${index+1}-wrong`,
             // })
             ga.event({
-              action: `${testId}-question-${index+1}`,
-              params: {
-                value: 0,
-              }
+              action: `${testId}-question-${index+1}-wrong`,
             })
             return acc
           }
         }, 0)    
     
         ga.event({
-          action: `${testId}-score`,
-          params: {
-            value: calculatedScore,
-          }
+          action: `${testId}-score-${calculatedScore}`,
         })
     
         const encryptedScoreText = encrypt(calculatedScore.toString())
@@ -153,13 +143,13 @@ const ResultPage: NextPage<ResultPageProps> = ({
 
   // read encrypted score from query
   useEffect(()=>{
-    const rawScore = router.query.s || scoreParam
+    const rawScore = router.query.s
     const encryptedScore = typeof rawScore === "string" ? rawScore : ""
     if (!encryptedScore) return;
     const decryptedScore = parseInt(decrypt(encryptedScore), 10)
 
     setScore(decryptedScore)
-  },[router.query.s, scoreParam, testId])
+  },[router.query.s, testId])
 
   const onClickRetry = useCallback(()=>{
     testId && router.push(`/tests/${testId}`)
@@ -257,11 +247,15 @@ export const getStaticPaths: GetStaticPaths = () => {
 
 export const getStaticProps: GetStaticProps = (context) => {
   const testId = context?.params?.testId || ""
+  const scoreParam = context?.params?.s || ""
+
+  const encryptedScore = typeof scoreParam === "string" ? scoreParam : ""
+  const decryptedScore = encryptedScore ? parseInt(decrypt(encryptedScore), 10) : -1
 
   return {
     props: {
       testId: testId === "food" ? "food" : "knowledge",
-      scoreParam: context?.params?.s || ""
+      defaultScore: decryptedScore
     },
   }
 }
