@@ -239,55 +239,9 @@ const ResultPage: NextPage<ResultPageProps> = ({
   )
 }
 
-// export const getStaticPaths: GetStaticPaths = async () => {
-//   const scoreParams = [0,1,2,3,4,5,6,7,8,9,10].map(item => encrypt(item.toString()))
-//   const testIdParams = ["food", "knowledge"]
-
-//   const paths: (string | {
-//     params: ParsedUrlQuery;
-//     locale?: string | undefined;
-//   })[] = []
-
-//   scoreParams.forEach(scoreParam =>{
-//     testIdParams.forEach(testIdParam => {
-//       const params = {
-//         testId: testIdParam,
-//         s: scoreParam
-//       }
-
-//       paths.push({params})
-//     })
-//   })
-//   console.log("paths: ", paths); // TODO: remove
-
-//   return {
-//     paths,
-//     fallback: true,
-//   };
-// }
-
-// export const getStaticProps: GetStaticProps = async (context) => {
-//   const testId = context?.params?.testId || ""
-//   console.log("testId: ", testId); // TODO: remove
-//   const scoreParam = context?.params?.s || ""
-
-//   const encryptedScore = typeof scoreParam === "string" ? scoreParam : ""
-//   console.log("encryptedScore: ", encryptedScore); // TODO: remove
-//   const decryptedScore = encryptedScore ? parseInt(decrypt(encryptedScore), 10) : -1
-
-//   console.log("defaultScore: ", decryptedScore); // TODO: remove
-//   return {
-//     props: {
-//       testId: testId === "food" ? "food" : "knowledge",
-//       defaultScore: decryptedScore
-//     },
-//   }
-// }
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const testId = context?.params?.testId || ""
-  const scoreParam = context?.params?.s || ""
-
+  const scoreParam = context?.query?.s || ""
   const encryptedScore = typeof scoreParam === "string" ? scoreParam : ""
   const decryptedScore = encryptedScore ? parseInt(decrypt(encryptedScore), 10) : -1
 
