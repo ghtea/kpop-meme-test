@@ -1,3 +1,4 @@
+import {ParsedUrlQuery} from "querystring";
 import copy from "copy-to-clipboard";
 import type {GetStaticPaths, GetStaticProps, NextPage} from "next"
 import {NextSeo} from "next-seo";
@@ -239,8 +240,27 @@ const ResultPage: NextPage<ResultPageProps> = ({
 }
 
 export const getStaticPaths: GetStaticPaths = () => {
+  const scoreParams = [0,1,2,3,4,5,6,7,8,9,10].map(item => encrypt(item.toString()))
+  const testIdParams = ["food", "knowledge"]
+
+  const paths: (string | {
+    params: ParsedUrlQuery;
+    locale?: string | undefined;
+  })[] = []
+
+  scoreParams.forEach(scoreParam =>{
+    testIdParams.forEach(testIdParam => {
+      const params = {
+        testId: testIdParam,
+        s: scoreParam
+      }
+
+      paths.push({params})
+    })
+  })
+
   return {
-    paths: [{params: {testId: "food"}}, {params: {testId: "knowledge"}}],
+    paths,
     fallback: true,
   };
 }

@@ -9,7 +9,7 @@ export const encrypt = (value: string) => {
 
   const encryptedValue = CryptoJS.AES.encrypt(value, key || "", {
     iv,
-    mode: CryptoJS.mode.CFB,
+    mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7,
     enc: CryptoJS.enc.Base64
   });
@@ -26,7 +26,7 @@ export const decrypt = (value: string) => {
 
   const decryptedValue = CryptoJS.AES.decrypt(value, key || "", {
     iv,
-    mode: CryptoJS.mode.CFB,
+    mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7,
     enc: CryptoJS.enc.Base64
   });
