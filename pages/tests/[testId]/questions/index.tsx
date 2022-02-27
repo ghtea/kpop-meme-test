@@ -106,10 +106,18 @@ const QuestionsPage: NextPage = () => {
     setTimeout(()=>setIsOptionsDisabled(false), 500)
   },[questionNumber])
 
+  const pageTitle = useMemo(()=>{
+    if (testId === "food"){
+      return `${WEBSITE_TITLE} - 음식편`
+    } else {
+      return `${WEBSITE_TITLE} - 지식편`
+    }
+  },[testId])
+
   return (
     <>
       <Head>
-        <title>{WEBSITE_TITLE}</title>
+        <title>{pageTitle}</title>
       </Head>
       <LayoutBasic>
         {testId && (

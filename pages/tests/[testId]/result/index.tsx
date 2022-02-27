@@ -1,6 +1,5 @@
-import {ParsedUrlQuery} from "querystring";
 import copy from "copy-to-clipboard";
-import type {GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage} from "next"
+import type {GetServerSideProps, NextPage} from "next"
 import {NextSeo} from "next-seo";
 import {useRouter} from "next/router"
 import {useCallback, useEffect, useMemo, useState} from "react"
@@ -190,14 +189,56 @@ const ResultPage: NextPage<ResultPageProps> = ({
       return "https://res.cloudinary.com/de1xj1rhy/image/upload/v1645698420/kpop-meme-test/og-score-0_nd9wek.png"
     }
   },[score])
+  
+  const ogTitle = useMemo(()=>{
+    if (score === 1){
+      return "1점 - \"스밍 좀 하셨군요\""
+    } else if (score == 2){
+      return "2점 - \"스밍 좀 하셨군요\""
+    } else if (score == 3){
+      return "3점 - \"스밍 좀 하셨군요\""
+    } else if (score == 4){
+      return "4점 - \"지금 듣는 노래도 혹시 케이팝..?\""
+    } else if (score == 5){
+      return "5점 - \"지금 듣는 노래도 혹시 케이팝..?\""
+    } else if (score == 6){
+      return "6점 - \"지금 듣는 노래도 혹시 케이팝..?\""
+    } else if (score == 7){
+      return "7점 - \"생일카페 가봤다 or 안가봤다\""
+    } else if (score == 8){
+      return "8점 - \"포카샷 해봤다 or 안해봤다\""
+    } else if (score == 9){
+      return "9점 - \"당신의 최애가 궁금해지는군요\""
+    } else if (score == 10){
+      return "10점 - \"사옥 창문 하나는 당신의 것\""
+    } else { // 0
+      return "0점 - \"..당신은 케이팝인이 아닙니다\""
+    }
+  },[score])
+
+  const ogDescription = useMemo(()=>{
+    if (testId === "food"){
+      return `${WEBSITE_TITLE} - 음식편`
+    } else {
+      return `${WEBSITE_TITLE} - 지식편`
+    }
+  },[testId])
+
+  const pageTitle = useMemo(()=>{
+    if (testId === "food"){
+      return `${WEBSITE_TITLE} - 음식편`
+    } else {
+      return `${WEBSITE_TITLE} - 지식편`
+    }
+  },[testId])
 
   return (
     <>
       <NextSeo
-        title={WEBSITE_TITLE}
-        description=""
+        title={pageTitle}
         openGraph={{
-          title: WEBSITE_TITLE,
+          title: ogTitle,
+          description: ogDescription,
           images: [
             {
               url: ogImgUrl,

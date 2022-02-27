@@ -25,11 +25,27 @@ const TestPage: NextPage<TestPageProps> = ({
       : "https://res.cloudinary.com/de1xj1rhy/image/upload/v1645698420/kpop-meme-test/og-knowledge-start_ovmyiy.png" 
   },[testId])
 
+  const ogDescription = useMemo(()=>{
+    if (testId === "food"){
+      return "[음식편] 나는 아이돌 음식에 얼마나 진심일까..?"
+    } else {
+      return "[지식편] 케이팝 하시는 분들 모여주세요."
+    }
+  },[testId])
+
+  const pageTitle = useMemo(()=>{
+    if (testId === "food"){
+      return `${WEBSITE_TITLE} - 음식편`
+    } else {
+      return `${WEBSITE_TITLE} - 지식편`
+    }
+  },[testId])
+
   return (
     <>
       <NextSeo
-        title={WEBSITE_TITLE}
-        description=""
+        title={pageTitle}
+        description={ogDescription}
         openGraph={{
           title: WEBSITE_TITLE,
           images: [
