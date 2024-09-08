@@ -27,7 +27,7 @@ export const data = {
       {question:"박봄이 싫다고 말하는 것은?", options: ["토마토", "옥수수", "브로콜리", "고구마"], answer: 1},
     ],
     scores,
-  }, 
+  },
   knowledge: {
     questions: [
       {question:"트와이스 사나의 글씨체는?", options: ["1번", "2번", "3번", "4번"], answer: 0},
